@@ -1,6 +1,7 @@
-import discord, datetime, os
+import discord, datetime, os, dotenv
 from functions import *
 
+dotenv.load_dotenv()
 intents = discord.Intents.default()
 intents.members = True
 client = discord.Client(intents=intents)
