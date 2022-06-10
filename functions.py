@@ -1,4 +1,6 @@
-import requests, random
+from calendar import month
+from turtle import title
+import requests, random, re
 from bs4 import BeautifulSoup
 
 def daily_quote():
@@ -61,13 +63,25 @@ def make_time(dto):
     return f'{months.get(int(month))} {int(day)}, {year} at {int(hour)}:{int(minute)}:{round(float(second))}'
     
 def get_age(new, old):
-    year_n=str(str(new).split(' ')[0]).split('-')[0]
-    month_n=str(str(new).split(' ')[0]).split('-')[1]
-    day_n=str(str(new).split(' ')[0]).split('-')[2]
-    year_o=str(str(old).split(' ')[0]).split('-')[0]
-    month_o=str(str(old).split(' ')[0]).split('-')[1]
-    day_o=str(str(old).split(' ')[0]).split('-')[2]
-    return f'{abs(int(year_n)-int(year_o))} years, {abs(int(month_n)-int(month_o))} months, {abs(int(day_n)-int(day_o))} days'
+    day_n=int(str(str(new).split(' ')[0]).split('-')[2])
+    day_o=int(str(str(old).split(' ')[0]).split('-')[2])
+    month_n=int(str(str(new).split(' ')[0]).split('-')[1])
+    month_o=int(str(str(old).split(' ')[0]).split('-')[1])
+    year_n=int(str(str(new).split(' ')[0]).split('-')[0])
+    year_o=int(str(str(old).split(' ')[0]).split('-')[0])
+    days_total=(day_n-day_o)+((month_n-month_o)*30)+((year_n-year_o)*365)
+    year_delta, days_total=divmod(days_total, 365)
+    month_delta, day_delta=divmod(days_total, 30)
+    return f'{year_delta} years, {month_delta} months, {day_delta} days'
 
 def cwemmentize(msg):
     return str(msg).replace('r', 'w').replace('l', 'w').replace('s', 'sh').replace('x','gz').replace('o','ow')
+
+def poll(syntax):
+    title=re.search('\(.*\)', str(syntax)).group(0).replace('(', '').replace(')', '')
+    description=re.search('\{.*\}', str(syntax)).group(0).replace('{','').replace('}','')
+    options=re.search('\[.*\]', str(syntax)).group(0).replace('[','').replace(']','').split(';')
+    n_options=len(options)
+    if n_options>10 or n_options<1:
+        return None
+    return title, description, options, n_options
