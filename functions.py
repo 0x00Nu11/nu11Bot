@@ -1,5 +1,3 @@
-from calendar import month
-from turtle import title
 import requests, random, re
 from bs4 import BeautifulSoup
 
