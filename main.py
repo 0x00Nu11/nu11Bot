@@ -74,4 +74,12 @@ async def on_message(message):
             for i in range(n_options):
                 print(emojis.get(i+1))
                 await bot_msg.add_reaction(emojis.get(i+1))
+        case '.reverse_img':
+            attatch=message.attachments[0]
+            url=attatch.url
+            n_matches=reverse_img(url)
+            if n_matches==None:
+                await message.channel.send('**no matches found**', reference=message)
+            for i in n_matches:
+                await message.channel.send(i, reference=message)
 client.run(os.getenv('TOKEN'))

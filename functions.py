@@ -83,3 +83,37 @@ def poll(syntax):
     if n_options>10 or n_options<1:
         return None
     return title, description, options, n_options
+
+def reverse_img(attatch):
+    url='https://tineye.com/result_json/'
+    params={
+        'url':str(attatch),
+        'Content-Disposition': 'form-data'
+    }
+    headers={
+        'Host' : 'tineye.com',
+        'Accept' : 'application/json, text/plain, */*',
+        'Content-Type' : 'multipart/form-data; boundary=----WebKitFormBoundaryrazdJkeBEo3rpFMc',
+        'Origin' : 'https://tineye.com',
+        'Sec-Fetch-Site' : 'same-origin',
+        'Sec-Fetch-Mode' : 'cors',
+        'Sec-Fetch-Dest' : 'empty',
+        'Referer' : 'https://tineye.com/search',
+        'Accept-Encoding' : 'gzip, deflate',
+        'Accept-Language' : 'en-US,en;q=0.9',
+    }
+    response = requests.post(url=url, params=params, headers=headers)
+    data=response.json()
+    matches=data['matches']
+    info=[]
+    for i in matches:
+        name=i['domains'][0]['backlinks'][0]['image_name']
+        backlink=i['domains'][0]['backlinks'][0]['backlink']
+        link=i['domains'][0]['backlinks'][0]['url']
+        info.append([name, backlink, link])
+    if info==[]:
+        return None
+    n_matches=[]
+    for j in info:
+        n_matches.append(f'**match number:** *{info.index(j)+1}*\n**image name:** *{j[0]}*\n**image source:** {j[1]}\n**image url:** {j[2]}\n')
+    return n_matches
